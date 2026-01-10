@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "src",
+    "modules/chrome-ghost",
+    "modules/kernel-orchestra",
+    "ui/cli",
+]
+resolver = "2"
