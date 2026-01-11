@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package aether.modules;
+
+import "src/proto/aether.proto";
+
+service ModuleService {
+    rpc RunScan (ScanRequest) returns (ScanResponse);
+    rpc GetStatus (StatusRequest) returns (StatusResponse);
+}
+
+message ScanRequest {
+    string target = 1;
+    repeated string options = 2;
+}
+
+message ScanResponse {
+    string scan_id = 1;
+    string status = 2;
+    string results_json = 3;
+}
+
+message StatusRequest {
+    string module_id = 1;
+}
+
+message StatusResponse {
+    string state = 1;
+    string uptime = 2;
+}

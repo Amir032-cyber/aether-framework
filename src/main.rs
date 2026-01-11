@@ -1,5 +1,9 @@
+mod core;
+
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
+use crate::core::orchestrator::Orchestrator;
+use crate::core::api_gateway::ApiGateway;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -11,8 +15,13 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Démarrage de AETHER Core v0.1.0...");
     
-    // TODO: Initialiser l'orchestrateur
-    // TODO: Démarrer la passerelle API
+    // Initialiser l'orchestrateur
+    let orchestrator = Orchestrator::new();
+    info!("Orchestrateur initialisé.");
+    
+    // Démarrer la passerelle API
+    let gateway = ApiGateway::new(8080);
+    gateway.start().await?;
     
     info!("AETHER Core est prêt.");
     
