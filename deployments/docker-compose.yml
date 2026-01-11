@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  aether-core:
+    build:
+      context: ..
+      dockerfile: deployments/Dockerfile.core
+    ports:
+      - "50051:50051"
+    networks:
+      - aether-net
+
+  neurospoit:
+    build:
+      context: ../modules/neurospoit
+    depends_on:
+      - aether-core
+    networks:
+      - aether-net
+
+networks:
+  aether-net:
+    driver: bridge
