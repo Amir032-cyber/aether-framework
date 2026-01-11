@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package aether.modules;
+
+service SecurityModule {
+    rpc ExecuteTask (TaskRequest) returns (TaskResponse);
+    rpc GetHealth (HealthCheckRequest) returns (HealthCheckResponse);
+}
+
+message TaskRequest {
+    string task_id = 1;
+    string payload = 2;
+    map<string, string> options = 3;
+}
+
+message TaskResponse {
+    string task_id = 1;
+    string status = 2;
+    string output = 3;
+}
+
+message HealthCheckRequest {}
+
+message HealthCheckResponse {
+    bool healthy = 1;
+    string message = 2;
+}
