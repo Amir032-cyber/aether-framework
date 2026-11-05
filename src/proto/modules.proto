@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package aether.modules;
 
-import "src/proto/aether.proto";
+import "aether.proto";
 
 service ModuleService {
     rpc RunScan (ScanRequest) returns (ScanResponse);

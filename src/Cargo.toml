@@ -2,6 +2,11 @@
 name = "aether-core"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
+
+[[bin]]
+name = "aether-core"
+path = "main.rs"
 
 [dependencies]
 tokio = { version = "1.0", features = ["full"] }
