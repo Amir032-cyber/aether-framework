@@ -63,9 +63,53 @@ services:
     cpus: 0.75
     restart: "no"
 
+  zap-baseline:
+    image: zaproxy/zap-stable:2.15.0
+    profiles: [tools]
+    depends_on: [juice-shop]
+    networks: [aether-lab]
+    command: ["zap-baseline.py", "-t", "http://juice-shop:3000", "-m", "5", "-r", "/zap/wrk/juice-shop.html"]
+    volumes:
+      - reports:/zap/wrk
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1.0
+    restart: "no"
+
+  nmap-discovery:
+    image: instrumentisto/nmap:7.95
+    profiles: [tools]
+    depends_on: [juice-shop, webgoat, dvwa]
+    networks: [aether-lab]
+    command: ["-sT", "-sV", "--version-light", "-T2", "-Pn", "-p", "80,3000,8080", "juice-shop", "webgoat", "dvwa"]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 256m
+    cpus: 0.5
+    restart: "no"
+
+  trivy-fs:
+    image: aquasec/trivy:0.58.1
+    profiles: [tools]
+    networks: [aether-lab]
+    command: ["fs", "--scanners", "secret", "--exit-code", "0", "--format", "json", "-o", "/reports/trivy.json", "/src"]
+    volumes:
+      - ../..:/src:ro
+      - reports:/reports
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 1g
+    cpus: 1.0
+    restart: "no"
+
 networks:
   aether-lab:
     name: aether-lab-isolated
     driver: bridge
     internal: true
     attachable: false
+
+volumes:
+  reports:
+    name: aether-lab-reports

@@ -23,6 +23,30 @@ Docker et Docker Compose sont requis. Depuis la racine du dépôt :
 ./scripts/lab-smoke.sh
 ```
 
+L’agent IA défensif peut générer un plan sans exécuter de commande :
+
+```bash
+cd modules/auto-pentest
+python -m auto_pentest plan http://juice-shop:3000
+printf '{"findings":["missing security header"]}' | python -m auto_pentest analyze
+```
+
+Si `OPENAI_API_KEY` est configurée, l’agent peut demander une synthèse structurée à
+`gpt-6-luna`. Sans clé, il utilise automatiquement son analyse locale. Les données transmises
+sont nettoyées des champs d’authentification, cookies, tokens, mots de passe et secrets.
+
+Les outils de scan passif sont lancés uniquement dans le réseau Docker interne :
+
+```bash
+./scripts/lab-scan.sh
+```
+
+Cette commande utilise OWASP ZAP Baseline pour les contrôles web passifs, Nmap pour un inventaire
+TCP limité des services du lab et Trivy pour les vulnérabilités et secrets du code monté en lecture
+seule. Trivy est configuré en mode détection de secrets afin de rester fonctionnel sans ouvrir le
+réseau du laboratoire ; une base de vulnérabilités préchargée pourra être ajoutée séparément. Aucun
+de ces outils ne lance d’exploit, de brute force ou de persistance.
+
 Adresses locales :
 
 | Cible | URL |
