@@ -1,0 +1,89 @@
+
+openapi: 3.0.3
+info:
+  title: Aether Core Local API
+  version: 0.1.0
+  description: >-
+    API de supervision locale du cœur Aether. Les endpoints exposés ici sont
+    en lecture seule et ne déclenchent aucune action distante.
+servers:
+  - url: http://127.0.0.1:8080
+    description: Instance locale par défaut
+paths:
+  /:
+    get:
+      summary: Informations du service
+      responses:
+        '200':
+          description: Service disponible
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceStatus'
+  /health:
+    get:
+      summary: Sonde de santé
+      responses:
+        '200':
+          description: Cœur opérationnel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+  /modules:
+    get:
+      summary: Liste des modules enregistrés
+      responses:
+        '200':
+          description: Modules connus du registre
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ModuleInfo'
+  /metrics:
+    get:
+      summary: Métriques minimales de supervision
+      responses:
+        '200':
+          description: Compteurs locaux
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Metrics'
+  /unknown:
+    get:
+      summary: Exemple de route inexistante
+      responses:
+        '404':
+          description: Ressource inconnue
+components:
+  schemas:
+    ServiceStatus:
+      type: object
+      required: [service, status]
+      properties:
+        service: { type: string, example: aether-core }
+        status: { type: string, example: ok }
+    Health:
+      type: object
+      required: [service, status]
+      properties:
+        service: { type: string }
+        status: { type: string, enum: [ok] }
+    ModuleInfo:
+      type: object
+      required: [id, name, capabilities]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        capabilities:
+          type: array
+          items: { type: string }
+    Metrics:
+      type: object
+      required: [modules_registered, service]
+      properties:
+        modules_registered: { type: integer, minimum: 0 }
+        service: { type: string, example: aether-core }

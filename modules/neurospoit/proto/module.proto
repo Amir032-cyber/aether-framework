@@ -1,0 +1,3 @@
+syntax = "proto3";
+package aether.experimental;
+message ScopeNotice { bool authorization_required = 1; }

@@ -1,0 +1,8 @@
+FROM golang:1.22-bookworm AS build
+WORKDIR /app
+COPY modules/neurospoit ./modules/neurospoit
+WORKDIR /app/modules/neurospoit
+RUN go build -o /out/neurospoit ./cmd/neurospoit
+FROM debian:bookworm-slim
+COPY --from=build /out/neurospoit /usr/local/bin/neurospoit
+ENTRYPOINT ["/usr/local/bin/neurospoit"]

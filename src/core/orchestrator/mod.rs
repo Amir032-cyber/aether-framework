@@ -1,9 +1,10 @@
 use anyhow::{bail, Result};
+use serde::Serialize;
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tracing::info;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ModuleInfo {
     pub id: String,
     pub name: String,
@@ -72,6 +73,10 @@ impl Orchestrator {
             .into_iter()
             .filter(|module| module.capabilities.iter().any(|item| item == capability))
             .collect()
+    }
+
+    pub fn count(&self) -> usize {
+        self.modules.lock().expect("orchestrateur verrouillé").len()
     }
 }
 

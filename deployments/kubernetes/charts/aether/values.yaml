@@ -1,0 +1,10 @@
+image:
+  repository: aether-core
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 8080
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
