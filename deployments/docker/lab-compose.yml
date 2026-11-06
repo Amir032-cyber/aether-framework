@@ -1,0 +1,71 @@
+services:
+  aether-core:
+    build:
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile.core
+    profiles: [lab]
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [aether-lab]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: 1.0
+    restart: "no"
+
+  juice-shop:
+    image: bkimminich/juice-shop:v17.1.1
+    profiles: [lab]
+    ports:
+      - "127.0.0.1:3000:3000"
+    networks: [aether-lab]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 768m
+    cpus: 1.0
+    restart: "no"
+    healthcheck:
+      test: [CMD-SHELL, "wget -q -O- http://127.0.0.1:3000/rest/products/search?q=test >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  webgoat:
+    image: webgoat/webgoat:v2023.8
+    profiles: [lab]
+    ports:
+      - "127.0.0.1:8081:8080"
+      - "127.0.0.1:9090:9090"
+    networks: [aether-lab]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 768m
+    cpus: 1.0
+    restart: "no"
+    environment:
+      WEBGOAT_HOST: 0.0.0.0
+
+  dvwa:
+    image: vulnerables/web-dvwa:latest
+    profiles: [lab]
+    ports:
+      - "127.0.0.1:8082:80"
+    networks: [aether-lab]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 256
+    mem_limit: 512m
+    cpus: 0.75
+    restart: "no"
+
+networks:
+  aether-lab:
+    name: aether-lab-isolated
+    driver: bridge
+    internal: true
+    attachable: false
