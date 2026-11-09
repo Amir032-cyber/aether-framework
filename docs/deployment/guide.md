@@ -41,6 +41,15 @@ Les outils de scan passif sont lancés uniquement dans le réseau Docker interne
 ./scripts/lab-scan.sh
 ```
 
+Pour analyser un rapport JSON déjà produit par un outil :
+
+```bash
+./scripts/lab-analyze.sh ./reports/scan.json ./reports/ai-assessment.json
+```
+
+Le script vérifie la structure minimale du résultat, refuse les rapports incomplets et contrôle
+que les champs sensibles sont masqués avant archivage.
+
 Cette commande utilise OWASP ZAP Baseline pour les contrôles web passifs, Nmap pour un inventaire
 TCP limité des services du lab et Trivy pour les vulnérabilités et secrets du code monté en lecture
 seule. Trivy est configuré en mode détection de secrets afin de rester fonctionnel sans ouvrir le
